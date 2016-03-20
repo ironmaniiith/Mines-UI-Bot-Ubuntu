@@ -7,6 +7,11 @@ POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
 board = []
 positions = {}
 
+GLOBALS = {
+	'mines': -100,
+	'safe' : 100,
+	'blank' : -1,
+}
 
 def inrange(x,board_length):
 	return x>=0 and x<board_length
@@ -62,19 +67,30 @@ def setProbabilityFlag(x, y):
 					and
 		y+ydiff>= 0 and y+ydiff<=len(board)
 	"""
-	
-	coordinates = []
+
+	coordinates = [] # Contains all the coordinates of blank boxes
+	blank_count = 0
+	mines_count = 0
+	safe_count = 0
 	for xdiff in xrange(-1,2):
 		for ydiff in xrange(-1,2,2-xdiff%2):
-			if inrange(x+xdiff,7) and inrange(y+ydiff,7):
-				coordinates.append((x+xdiff, y+ydiff))
-				print (x+xdiff,y+ydiff)
+			x_final = x + xdiff
+			y_final = y + ydiff
 
-	return coordinates
+			if board[x_final][y_final] == GLOBALS['mines']:
+				mines_count += 1
+			elif board[x_final][y_final] == GLOBALS['safe'] :
+				safe_count += 1
+			elif inrange(x+xdiff,7) and inrange(y+ydiff,7) and board[x_final][y_final] == GLOBALS['blank']:
+				coordinates.append((x+xdiff, y+ydiff))
+				blank_count += 1
+				# print (x+xdiff,y+ydiff)
+
+	return coordinates, { 'blank_count': blank_count, 'safe_count': safe_count, 'mines_count': mines_count }
 	"""
-		The whole target of the above code was to go to the generate all the neighbouring places of a given center coordinate ((1,1) in this case) 
+		The whole target of the above code was to go to the generate all the neighbouring places of a given center coordinate
+		((1,1) in this case)
 	"""
-setProbabilityFlag(0,0)
 
 for i in POSSIBLE_NUMBERS:
 	positions[str(i)] = []
@@ -89,3 +105,6 @@ for i in xrange(0,8):
 
 current = 1
 position = positions[str(current)]
+for coordinates in position:
+	blocks_coordinates, counts = setProbabilityFlag(coordinates[0], coordinates[1])
+	print blocks_coordinates, counts
