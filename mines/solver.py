@@ -4,9 +4,11 @@ print "0: Block revealed and is null"
 print "1,2,3,4,5: Numbers that are opened"
 
 POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
+BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num >0]
 board = []
 positions = {}
 
+TOTAL_MINES_REMAINING = 10
 GLOBALS = {
 	'mines': -100,
 	'safe' : 100,
@@ -77,13 +79,14 @@ def setProbabilityFlag(x, y):
 			x_final = x + xdiff
 			y_final = y + ydiff
 
-			if board[x_final][y_final] == GLOBALS['mines']:
-				mines_count += 1
-			elif board[x_final][y_final] == GLOBALS['safe'] :
-				safe_count += 1
-			elif inrange(x+xdiff,7) and inrange(y+ydiff,7) and board[x_final][y_final] == GLOBALS['blank']:
-				coordinates.append((x+xdiff, y+ydiff))
-				blank_count += 1
+			if inrange(x_final,8) and inrange(y_final, 8):
+				if board[x_final][y_final] == GLOBALS['mines']:
+					mines_count += 1
+				elif board[x_final][y_final] == GLOBALS['safe']:
+					safe_count += 1
+				elif board[x_final][y_final] == GLOBALS['blank']:
+					coordinates.append((x+xdiff, y+ydiff))
+					blank_count += 1
 				# print (x+xdiff,y+ydiff)
 
 	return coordinates, { 'blank_count': blank_count, 'safe_count': safe_count, 'mines_count': mines_count }
@@ -92,19 +95,72 @@ def setProbabilityFlag(x, y):
 		((1,1) in this case)
 	"""
 
-for i in POSSIBLE_NUMBERS:
-	positions[str(i)] = []
+class Solver():
+	"""
+		Solver class for the board
+	"""
+	def __init__(self):
+		pass
+	def mark_all(self, board, blocks_coordinates, flag):
+		global TOTAL_MINES_REMAINING
+		status = False
+		for coordinate in blocks_coordinates:
+			if board[coordinate[0]][coordinate[1]] != flag:
+				print "Marking flag = {0} at {1}".format(flag, (coordinate[0], coordinate[1]))
+				board[coordinate[0]][coordinate[1]] = flag
+				TOTAL_MINES_REMAINING -= (flag == GLOBALS['mines'])
+				print "TOTAL_MINES_REMAINING = " + str(TOTAL_MINES_REMAINING)
+				status = True
+		return status
+	def mark_safe(self):
+		pass
+	def mark_mines(self):
+		pass
+	def assign_probability(self):
+		pass
 
-for i in xrange(0,8):
-	a = raw_input("Enter the row number {0}: ".format(i)).strip()
-	a = map(int, a.split(' '))
-	for j in xrange(0,8):
-		positions[str(a[j])].append((i,j))
-	# print position
-	board.append(a)
 
-current = 1
-position = positions[str(current)]
-for coordinates in position:
-	blocks_coordinates, counts = setProbabilityFlag(coordinates[0], coordinates[1])
-	print blocks_coordinates, counts
+def getInputOfBlocks():
+	board = []
+	positions = {}
+
+	for i in POSSIBLE_NUMBERS:
+		positions[str(i)] = []
+
+	for i in xrange(0,8):
+		a = raw_input().strip()
+		a = map(int, a.split(' '))
+		for j in xrange(0,8):
+			positions[str(a[j])].append((i,j))
+		# print position
+		board.append(a)
+
+
+while TOTAL_MINES_REMAINING != 0:
+	getInputOfBlocks()
+	solver = Solver()
+	while True:
+		print "==========================================================="
+		flag = False
+		for val in BLOCK_NUMBERS:
+			print "Iterating for val = {0}".format(val)
+			position = positions[str(val)]
+			for coordinates in position:
+				blocks_coordinates, counts = setProbabilityFlag(coordinates[0], coordinates[1])
+				s = "{0}, {1} ->".format((coordinates[0], coordinates[1]),val)
+				print s,
+				print blocks_coordinates, counts
+				if counts['mines_count'] == val and counts['blank_count'] > 0:
+					print "marking safe the coordinates: {0}".format(blocks_coordinates)
+					status = solver.mark_all(board, blocks_coordinates, GLOBALS['safe'])
+					if status:
+						flag = True
+				elif counts['blank_count'] <= val-counts['mines_count']:
+					# All the mines
+					status = solver.mark_all(board, blocks_coordinates, GLOBALS['mines'])
+					if status:
+						flag = True
+			print board
+		if flag == False:
+			print "Breaking at i = {0} more information needed for proceeding".format(i)
+			break
