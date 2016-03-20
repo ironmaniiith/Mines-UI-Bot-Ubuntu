@@ -1,3 +1,5 @@
+import os, time
+import giveDimensions
 print "Instructions: "
 print "-1: Block not yet revealed."
 print "0: Block revealed and is null"
@@ -7,7 +9,7 @@ POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
 BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num >0]
 board = []
 positions = {}
-
+locations = giveDimensions.location_extractor()
 TOTAL_MINES_REMAINING = 10
 GLOBALS = {
 	'mines': -100,
@@ -135,6 +137,16 @@ def getInputOfBlocks():
 		# print position
 		board.append(a)
 
+def click(i,j):
+	os.system("xdotool mousemove {0} {1} click 1".format(location[i][j]))
+	time.sleep(0.5)
+
+def clickOnSafeFlags():
+	for i in xrange(0,board_length):
+		for j in xrange(0, board_length):
+			if board_length[i][j] == GLOBALS['safe']:
+				click(i,j)
+	return
 
 while TOTAL_MINES_REMAINING != 0:
 	getInputOfBlocks()
@@ -163,4 +175,5 @@ while TOTAL_MINES_REMAINING != 0:
 			print board
 		if flag == False:
 			print "Breaking at i = {0} more information needed for proceeding".format(i)
+			clickOnSafeFlags()
 			break
