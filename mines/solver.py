@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os, time
+import os, time, random
 import giveDimensions
 import findNumbers, findUnOpened, findImage
 print "Instructions: "
@@ -163,16 +163,19 @@ def getInputOfBlocks():
 	print board
 
 def click(i,j):
-	time.sleep(0.1)
+	time.sleep(0.15)
 	os.system("xdotool mousemove {0} {1} click 1".format(locations[i][j][0], locations[i][j][1]))
 	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
 
 def clickRandom(board_length=8):
+	i,j = random.choice(positions['-1'])
+	click(j,i)
+	return
 	for i in xrange(0,board_length):
 		for j in xrange(0,board_length):
 			if board[i][j] == -1:
-				click(i,j)
+				click(j,i)
 				return
 
 def clickOnSafeFlags(board_length):
@@ -223,3 +226,7 @@ while TOTAL_MINES_REMAINING != 0:
 				clickRandom()
 			break
 print 'Game ended, all flags found'
+for i in xrange(0,8):
+	for j in xrange(0,8):
+		if board[i][j] == -100:
+			click(j,i)
