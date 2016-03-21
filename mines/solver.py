@@ -222,6 +222,7 @@ while TOTAL_MINES_REMAINING != 0:
 				counter += 1
 			if counter == 2:
 				counter = 0
+				print 'Board before calling the random is {0}'.format(board)
 				print 'Click random'
 				clickRandom()
 			break
