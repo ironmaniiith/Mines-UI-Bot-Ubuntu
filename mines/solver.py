@@ -190,7 +190,7 @@ def clickOnSafeFlags(board_length):
 counter = 0
 while TOTAL_MINES_REMAINING != 0:
 	getInputOfBlocks()
-	TOTAL_MINES_REMAINING = 8
+	TOTAL_MINES_REMAINING = 10
 	solver = Solver()
 	while True:
 		print "==========================================================="
