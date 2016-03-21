@@ -188,6 +188,7 @@ def clickOnSafeFlags(board_length):
 				was_clicked = True
 	return was_clicked
 counter = 0
+
 while TOTAL_MINES_REMAINING != 0:
 	getInputOfBlocks()
 	TOTAL_MINES_REMAINING = 10
@@ -227,6 +228,7 @@ while TOTAL_MINES_REMAINING != 0:
 				clickRandom()
 			break
 print 'Game ended, all flags found'
+
 if not is_game_finished():
 	# If the message box that says that the game is finished has not yet come, then mark all the mines
 	for i in xrange(0,8):

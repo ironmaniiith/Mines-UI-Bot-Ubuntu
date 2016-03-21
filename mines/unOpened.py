@@ -49,4 +49,3 @@ def main():
 			old = col
 	print coordinates, return_status
 	return coordinates, return_status
-main()
