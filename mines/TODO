@@ -1,2 +1,1 @@
-Change the game solver logic.
-Instead of finding the unSolved one, find the ones which are opened and then initialize the board from -1
+Change the name unOpened to Opened
