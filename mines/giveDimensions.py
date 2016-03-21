@@ -7,6 +7,7 @@ from __future__ import division
 # 
 # divisions_x = int(raw_input(""))
 # divisions_y = int(raw_input(""))
+
 def location_extractor():
 	starting_x = 264
 	starting_y = 89
