@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os, time
 import giveDimensions
-import findNumbers, findUnOpened
+import findNumbers, findUnOpened, findImage
 print "Instructions: "
 print "-1: Block not yet revealed."
 print "0: Block revealed and is null"
@@ -127,10 +127,15 @@ class Solver():
 	def assign_probability(self):
 		pass
 
+def is_game_finished():
+	print 'is_game_finished================================='
+	coordinates, x = findImage.main('finished')
+	if len(coordinates):
+		exit(0)
+	return False
 
 def getInputOfBlocks():
 	print 'Taking new input'
-	time.sleep(3)
 	global board
 	board = []
 	global positions
@@ -142,11 +147,14 @@ def getInputOfBlocks():
 	os.system('xdotool mousemove 9 100') # Just remove the mouse before taking screenshot
 	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
 	os.system('xdotool windowactivate `cat id`')
-	time.sleep(0.3)
+	time.sleep(0.1)
 	os.system('scrot -q 100 fullScreen.png')
 	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
 	for i in xrange(0,8):
 		board.append([0]*8)
+
+	if is_game_finished():
+		exit(0)
 	findNumbers.update_board(board)
 	findUnOpened.update_board(board)
 	for i in xrange(0,8):
@@ -155,14 +163,20 @@ def getInputOfBlocks():
 	print board
 
 def click(i,j):
-	time.sleep(0.5)
+	time.sleep(0.1)
 	os.system("xdotool mousemove {0} {1} click 1".format(locations[i][j][0], locations[i][j][1]))
 	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
 
+def clickRandom(board_length=8):
+	for i in xrange(0,board_length):
+		for j in xrange(0,board_length):
+			if board[i][j] == -1:
+				click(i,j)
+				return
+
 def clickOnSafeFlags(board_length):
 	print "Going to start clickOnSafeFlags"
-	time.sleep(2)
 	was_clicked = False
 	for i in xrange(0,board_length):
 		for j in xrange(0, board_length):
@@ -170,9 +184,10 @@ def clickOnSafeFlags(board_length):
 				click(j,i)
 				was_clicked = True
 	return was_clicked
-
+counter = 0
 while TOTAL_MINES_REMAINING != 0:
 	getInputOfBlocks()
+	TOTAL_MINES_REMAINING = 8
 	solver = Solver()
 	while True:
 		print "==========================================================="
@@ -201,4 +216,9 @@ while TOTAL_MINES_REMAINING != 0:
 			was_clicked = clickOnSafeFlags(8)
 			if not was_clicked:
 				print "Not clicked"
+				counter += 1
+			if counter == 2:
+				counter = 0
+				print 'Click random'
+				clickRandom()
 			break
