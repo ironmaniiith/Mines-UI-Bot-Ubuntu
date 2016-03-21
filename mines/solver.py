@@ -148,6 +148,10 @@ def getInputOfBlocks():
 		board.append([0]*8)
 	findNumbers.update_board(board)
 	findUnOpened.update_board(board)
+	for i in xrange(0,8):
+		for j in xrange(0,8):
+			positions[str(board[i][j])].append((i,j))
+	print board
 
 def click(i,j):
 	time.sleep(0.5)

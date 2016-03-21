@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 import sys, os, re, collections
 import findImage
-AVAILABLE_NUMBERS = [1, 2, 3]
+AVAILABLE_NUMBERS = [1, 2, 3, 4]
 
 def update_board(board):
 	for i in AVAILABLE_NUMBERS:
