@@ -229,4 +229,4 @@ print 'Game ended, all flags found'
 for i in xrange(0,8):
 	for j in xrange(0,8):
 		if board[i][j] == -100:
-			click(j,i,2)
+			click(j,i,3)
