@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os, time
 import giveDimensions
 print "Instructions: "
@@ -19,6 +20,10 @@ GLOBALS = {
 
 def inrange(x,board_length):
 	return x>=0 and x<board_length
+
+""" ================================ TODO
+	Updating the positions dictionary is remaining, just do that
+"""
 
 def setProbabilityFlag(x, y):
 	""" 
@@ -123,7 +128,9 @@ class Solver():
 
 
 def getInputOfBlocks():
+	global board
 	board = []
+	global positions
 	positions = {}
 
 	for i in POSSIBLE_NUMBERS:
@@ -138,15 +145,21 @@ def getInputOfBlocks():
 		board.append(a)
 
 def click(i,j):
-	os.system("xdotool mousemove {0} {1} click 1".format(location[i][j]))
 	time.sleep(0.5)
+	os.system("xdotool mousemove {0} {1} click 1".format(locations[i][j][0], locations[i][j][1]))
+	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
+	return
 
-def clickOnSafeFlags():
+def clickOnSafeFlags(board_length):
+	print "Going to start clickOnSafeFlags"
+	time.sleep(2)
+	was_clicked = False
 	for i in xrange(0,board_length):
 		for j in xrange(0, board_length):
-			if board_length[i][j] == GLOBALS['safe']:
-				click(i,j)
-	return
+			if board[i][j] == GLOBALS['safe']:
+				click(j,i)
+				was_clicked = True
+	return was_clicked
 
 while TOTAL_MINES_REMAINING != 0:
 	getInputOfBlocks()
@@ -174,6 +187,8 @@ while TOTAL_MINES_REMAINING != 0:
 						flag = True
 			print board
 		if flag == False:
-			print "Breaking at i = {0} more information needed for proceeding".format(i)
-			clickOnSafeFlags()
+			print "Breaking, more information needed for proceeding"
+			was_clicked = clickOnSafeFlags(8)
+			if not was_clicked:
+				print "Not clicked"
 			break
