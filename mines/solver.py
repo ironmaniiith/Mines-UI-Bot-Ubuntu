@@ -164,7 +164,7 @@ def getInputOfBlocks():
 
 def click(i,j,click_type=1):
 	time.sleep(0.15)
-	os.system("xdotool mousemove {0} {1} click {2}".format(locations[i][j][0], locations[i][j][1], click)
+	os.system("xdotool mousemove {0} {1} click {2}".format(locations[i][j][0], locations[i][j][1], click))
 	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
 
