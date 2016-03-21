@@ -144,7 +144,7 @@ def getInputOfBlocks():
 	for i in POSSIBLE_NUMBERS:
 		positions[str(i)] = []
 
-	os.system('xdotool mousemove 9 100') # Just remove the mouse before taking screenshot
+	# os.system('xdotool mousemove 9 100') # Just remove the mouse before taking screenshot
 	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
 	os.system('xdotool windowactivate `cat id`')
 	time.sleep(0.1)
@@ -222,3 +222,4 @@ while TOTAL_MINES_REMAINING != 0:
 				print 'Click random'
 				clickRandom()
 			break
+print 'Game ended, all flags found'
