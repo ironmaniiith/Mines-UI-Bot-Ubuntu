@@ -151,7 +151,7 @@ def getInputOfBlocks():
 	os.system('scrot -q 100 fullScreen.png')
 	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
 	for i in xrange(0,8):
-		board.append([0]*8)
+		board.append([-1]*8)
 
 	if is_game_finished():
 		exit(0)
@@ -227,7 +227,9 @@ while TOTAL_MINES_REMAINING != 0:
 				clickRandom()
 			break
 print 'Game ended, all flags found'
-for i in xrange(0,8):
-	for j in xrange(0,8):
-		if board[i][j] == -100:
-			click(j,i,3)
+if not is_game_finished():
+	# If the message box that says that the game is finished has not yet come, then mark all the mines
+	for i in xrange(0,8):
+		for j in xrange(0,8):
+			if board[i][j] == -100:
+				click(j,i,3)

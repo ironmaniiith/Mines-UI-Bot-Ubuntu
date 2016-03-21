@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-	returns the array of values corresponding to -1, i.e. unExplored		
+	returns the array of values corresponding to 0, i.e. the ones which are explored and found to be safe		
 """
 
 from __future__ import division
@@ -10,8 +10,10 @@ import cv2
 import sys, os, re, collections
 
 number_of_blocks = 8
-desired = [182, 189, 186]
-return_status = -1
+# desired = [182, 189, 186]
+desired = [220, 222, 222]
+
+return_status = 0
 
 def is_slightly_deviated(col):
 	global desired
@@ -47,3 +49,4 @@ def main():
 			old = col
 	print coordinates, return_status
 	return coordinates, return_status
+main()
