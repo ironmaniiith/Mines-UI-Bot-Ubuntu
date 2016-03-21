@@ -162,9 +162,9 @@ def getInputOfBlocks():
 			positions[str(board[i][j])].append((i,j))
 	print board
 
-def click(i,j):
+def click(i,j,click_type=1):
 	time.sleep(0.15)
-	os.system("xdotool mousemove {0} {1} click 1".format(locations[i][j][0], locations[i][j][1]))
+	os.system("xdotool mousemove {0} {1} click {2}".format(locations[i][j][0], locations[i][j][1], click)
 	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
 
@@ -229,4 +229,4 @@ print 'Game ended, all flags found'
 for i in xrange(0,8):
 	for j in xrange(0,8):
 		if board[i][j] == -100:
-			click(j,i)
+			click(j,i,2)
