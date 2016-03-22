@@ -171,13 +171,13 @@ def click(i,j,click_type=1):
 def clickRandom(board_length=8):
 	# i,j = random.choice(positions['-1']) # Can use only this is the positions are also updated, which is not being done for now
 	# click(j,i)
-	return
+	shuf = []
 	for i in xrange(0,board_length):
 		for j in xrange(0,board_length):
 			if board[i][j] == -1:
-				click(j,i)
-				return
-
+				shuf.append((i,j))
+	i,j = random.choice(shuf)
+	click(j,i)
 def clickOnSafeFlags(board_length):
 	print "Going to start clickOnSafeFlags"
 	was_clicked = False
