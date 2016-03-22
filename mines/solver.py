@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os, time, random
 import giveDimensions
-import findNumbers, findUnOpened, findImage
+import findNumbers, findOpened, findImage
 print "Instructions: "
 print "-1: Block not yet revealed."
 print "0: Block revealed and is null"
@@ -148,7 +148,7 @@ def getInputOfBlocks():
 	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
 	os.system('xdotool windowactivate `cat id`')
 	time.sleep(0.1)
-	os.system('scrot -q 100 fullScreen.png')
+	os.system('scrot -z -q 100 fullScreen.png')
 	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
 	for i in xrange(0,8):
 		board.append([-1]*8)
@@ -156,7 +156,7 @@ def getInputOfBlocks():
 	if is_game_finished():
 		exit(0)
 	findNumbers.update_board(board)
-	findUnOpened.update_board(board)
+	findOpened.update_board(board)
 	for i in xrange(0,8):
 		for j in xrange(0,8):
 			positions[str(board[i][j])].append((i,j))
