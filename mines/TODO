@@ -1,2 +1,4 @@
 Improve random function
 Don't forget to update the positions dictionary whenever it changes
+Define all the global values in one python file
+Don't just mark the flags in the end, also ensure to open all the non explored blocks
