@@ -114,10 +114,10 @@ class Solver():
 		status = False
 		for coordinate in blocks_coordinates:
 			if board[coordinate[0]][coordinate[1]] != flag:
-				print "Marking flag = {0} at {1}".format(flag, (coordinate[0], coordinate[1]))
+				# print "Marking flag = {0} at {1}".format(flag, (coordinate[0], coordinate[1]))
 				board[coordinate[0]][coordinate[1]] = flag
 				TOTAL_MINES_REMAINING -= (flag == GLOBALS['mines'])
-				print "TOTAL_MINES_REMAINING = " + str(TOTAL_MINES_REMAINING)
+				# print "TOTAL_MINES_REMAINING = " + str(TOTAL_MINES_REMAINING)
 				status = True
 		return status
 	def mark_safe(self):
@@ -128,7 +128,7 @@ class Solver():
 		pass
 
 def is_game_finished():
-	print 'is_game_finished================================='
+	# print 'is_game_finished================================='
 	coordinates, x = findImage.main('finished')
 	if len(coordinates):
 		exit(0)
@@ -169,8 +169,8 @@ def click(i,j,click_type=1):
 	return
 
 def clickRandom(board_length=8):
-	i,j = random.choice(positions['-1'])
-	click(j,i)
+	# i,j = random.choice(positions['-1']) # Can use only this is the positions are also updated, which is not being done for now
+	# click(j,i)
 	return
 	for i in xrange(0,board_length):
 		for j in xrange(0,board_length):
