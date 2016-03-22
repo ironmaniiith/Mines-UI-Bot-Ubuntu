@@ -163,7 +163,7 @@ def getInputOfBlocks():
 	print board
 
 def click(i,j,click_type=1):
-	time.sleep(0.15)
+	time.sleep(0.1)
 	os.system("xdotool mousemove {0} {1} click {2}".format(locations[i][j][0], locations[i][j][1], click_type))
 	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
@@ -228,7 +228,7 @@ while TOTAL_MINES_REMAINING != 0:
 				clickRandom()
 			break
 print 'Game ended, all flags found'
-
+time.sleep(0.2)
 if not is_game_finished():
 	# If the message box that says that the game is finished has not yet come, then mark all the mines
 	for i in xrange(0,8):
