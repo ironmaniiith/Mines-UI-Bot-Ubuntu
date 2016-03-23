@@ -56,27 +56,26 @@ POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
 """
 	BLOCK_NUMBERS : Positive numbers among POSSIBLE_NUMBERS
 """
-BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num >0]
+BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num > 0]
 
 """
-	locations : List containing the pixel value of the coordinate.
-	How to use : Suppose if you want to find the pixel value (or location) when coordinate is given (like 3,4).
-	Now for [3,4], locations[3][4] gives the coordinate (in terms of pixels) which can be used for clicking or similar purposes.
-
-"""
-locations = giveDimensions.location_extractor()
-
-"""
-	Below are the helping values required for find the coordinates in pixels using locations
+	Below are the helping values required for finding the coordinates in pixels using location function in giveDimensions
 	starting : Dictionary containing the x and y coordinates of board's actual starting pixel
 	ending : Dictionary containing the x and y coordinates of board's actual ending pixel
 	divisions : Dictionary containing the x and y divisions in the current board, ideally should be equal to number_of_blocks
 """
 starting, ending, divisions = {}, {}, {}
-# starting['x']-starting['y'] == ending['x'] - ending['y'] for a square board
 starting['x'] = 264
 starting['y'] = 89
 ending['x'] = 928
 ending['y'] = 753
 divisions['x'] = 8
 divisions['y'] = 8
+# starting['x']-starting['y'] == ending['x'] - ending['y'] for a square board
+
+"""
+	locations : List containing the pixel value of the coordinate.
+	How to use : Suppose if you want to find the pixel value (or location) when coordinate is given (say (3,4)).
+	Now for (3,4), locations[3][4] gives the coordinate (in terms of pixels) which can be used for clicking or similar purposes.
+"""
+locations = giveDimensions.location_extractor(starting, ending, divisions)

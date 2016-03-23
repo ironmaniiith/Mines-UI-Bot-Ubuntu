@@ -1,37 +1,26 @@
 #!/usr/bin/python
 from __future__ import division
-# starting_x = int(raw_input(""))
-# starting_y = int(raw_input(""))
-# ending_x = int(raw_input(""))
-# ending_y = int(raw_input(""))
-# 
-# divisions_x = int(raw_input(""))
-# divisions_y = int(raw_input(""))
+"""
+TODO:
+	Add comments, explain each argument in the function location_extractor
+"""
+def location_extractor(starting={'x':264, 'y':89}, ending={'x':928, 'y':753}, divisions={'x':8, 'y':8}):
+	width =  {}
+	width['x'] = ending['x'] - starting['x']
+	width['y'] = ending['y'] - starting['y']
 
-def location_extractor():
-	starting_x = 264
-	starting_y = 89
-	ending_x = 928
-	ending_y = 753
-	divisions_x = 8
-	divisions_y = 8
+	block_size['x'] = width['x']/divisions['x']
+	block_size['y'] = width['y']/divisions['y']
 
-	width_x = ending_x - starting_x
-	width_y = ending_y - starting_y
-	# print width_x, divisions_x
-	block_size_x = width_x/divisions_x
-	block_size_y = width_y/divisions_y
-	# print block_size_x, block_size_y
 	x_points = []
 	y_points = []
 
-	for i in xrange(0,divisions_x):
-		x_points.append(starting_x + i * block_size_x + block_size_x/1.9)
+	for i in xrange(0,divisions['x']):
+		x_points.append(starting['x'] + i * block_size['x'] + block_size['x']/1.9)
 
-	for j in xrange(0,divisions_y):
-		y_points.append(starting_y + j * block_size_y + block_size_y/1.9)
-	# print x_points	
-	# print y_points
+	for j in xrange(0,divisions['y']):
+		y_points.append(starting['y'] + j * block_size['y'] + block_size['y']/1.9)
+
 	locations = []
 	for i in x_points:
 		row = []
