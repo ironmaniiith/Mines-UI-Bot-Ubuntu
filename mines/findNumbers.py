@@ -1,5 +1,7 @@
 #!/usr/bin/python
+
 from __future__ import division
+import GLOBALS
 from operator import add, sub, div, le, lt
 import numpy as np
 import cv2

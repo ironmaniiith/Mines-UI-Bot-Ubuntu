@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import GLOBALS
 import Opened
 def update_board(board):
 	coordinates, image_number = Opened.main()
