@@ -5,7 +5,7 @@ TODO:
 	Add comments, explain each argument in the function location_extractor
 """
 def location_extractor(starting={'x':264, 'y':89}, ending={'x':928, 'y':753}, divisions={'x':8, 'y':8}):
-	width =  {}
+	width, block_size =  {}, {}
 	width['x'] = ending['x'] - starting['x']
 	width['y'] = ending['y'] - starting['y']
 
