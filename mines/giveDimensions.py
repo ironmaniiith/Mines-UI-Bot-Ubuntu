@@ -5,26 +5,19 @@ TODO:
 	Add comments, explain each argument in the function location_extractor
 """
 def location_extractor(starting={'x':264, 'y':89}, ending={'x':928, 'y':753}, divisions={'x':8, 'y':8}):
-	width, block_size =  {}, {}
-	width['x'] = ending['x'] - starting['x']
-	width['y'] = ending['y'] - starting['y']
-
-	block_size['x'] = width['x']/divisions['x']
-	block_size['y'] = width['y']/divisions['y']
-
-	x_points = []
-	y_points = []
-
-	for i in xrange(0,divisions['x']):
-		x_points.append(starting['x'] + i * block_size['x'] + block_size['x']/1.9)
-
-	for j in xrange(0,divisions['y']):
-		y_points.append(starting['y'] + j * block_size['y'] + block_size['y']/1.9)
+	width, block_size, points =  {}, {}, {}
+	keys = ['x', 'y']
+	for key in keys:
+		width[key] = ending[key] - starting[key]
+		block_size[key] = width[key]/divisions[key]
+		points[key] = []
+		for i in xrange(0,divisions[key]):
+			points[key].append(starting[key] + i * block_size[key] + block_size[key]/1.9)
 
 	locations = []
-	for i in x_points:
+	for i in points['x']:
 		row = []
-		for j in y_points:
+		for j in points['y']:
 			row.append((i,j))
 		locations.append(row)
 	return locations
