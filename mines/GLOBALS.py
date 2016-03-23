@@ -2,7 +2,7 @@
 
 import cv2, numpy as np
 import sys, os
-import re, time, random, operators, collections
+import re, time, random, operator, collections
 import giveDimensions
 
 """
