@@ -59,6 +59,15 @@ POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
 BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num > 0]
 
 """
+	Block codes used in the game logic to represent the board with their respective values.
+"""
+BLOCK_CODES = {
+	'mines' : -100,
+	'safe' : 100,
+	'blank' : -1,
+}
+
+"""
 	Below are the helping values required for finding the coordinates in pixels using location function in giveDimensions
 	starting : Dictionary containing the x and y coordinates of board's actual starting pixel
 	ending : Dictionary containing the x and y coordinates of board's actual ending pixel
