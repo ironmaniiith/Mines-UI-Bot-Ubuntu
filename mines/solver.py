@@ -9,18 +9,9 @@ print "-1: Block not yet revealed."
 print "0: Block revealed and is null"
 print "1,2,3,4,5: Numbers that are opened"
 
-# POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
-# BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num >0]
 board = []
 positions = {}
 mines_remaining = GLOBALS.TOTAL_MINES_REMAINING
-# locations = giveDimensions.location_extractor()
-# TOTAL_MINES_REMAINING = 10
-# GLOBALS = {
-	# 'mines': -100,
-	# 'safe' : 100,
-	# 'blank' : -1,
-# }
 
 def inrange(x,board_length=GLOBALS.number_of_blocks):
 	return x >= 0 and x < board_length
@@ -83,9 +74,7 @@ def setProbabilityFlag(x, y):
 	"""
 
 	coordinates = [] # Contains all the coordinates of blank boxes
-	blank_count = 0
-	mines_count = 0
-	safe_count = 0
+	counts = {'blank': 0, 'mines': 0, 'safe': 0}
 
 	for xdiff in xrange(-1,2):
 		for ydiff in xrange(-1,2,2-xdiff%2):
@@ -94,14 +83,14 @@ def setProbabilityFlag(x, y):
 
 			if inrange(x_final,8) and inrange(y_final, 8):
 				if board[x_final][y_final] == GLOBALS.BLOCK_CODES['mines']:
-					mines_count += 1
+					counts['mines'] += 1
 				elif board[x_final][y_final] == GLOBALS.BLOCK_CODES['safe']:
-					safe_count += 1
+					counts['safe'] += 1
 				elif board[x_final][y_final] == GLOBALS.BLOCK_CODES['blank']:
 					coordinates.append((x+xdiff, y+ydiff))
-					blank_count += 1
+					counts['blank'] += 1
 
-	return coordinates, { 'blank_count': blank_count, 'safe_count': safe_count, 'mines_count': mines_count }
+	return coordinates, counts
 	"""
 		The whole target of the above code was to go to the generate all the neighbouring places of a given center coordinate
 		((1,1) in this case)
@@ -189,52 +178,49 @@ def clickOnSafeFlags(board_length=GLOBALS.number_of_blocks):
 				was_clicked = True
 	return was_clicked
 
+def check_end():
+	time.sleep(0.5)
+	if not is_game_finished():
+		# If the message box that says that the game is finished has not yet come, then mark all the mines
+		click_type = 3 # Right click to mark the mines
+		for i in xrange(0, GLOBALS.number_of_blocks):
+			for j in xrange(0, GLOBALS.number_of_blocks):
+				if board[i][j] == GLOBALS.BLOCK_CODES['mines']:
+					click(j,i,click_type)
+
 solver = Solver()
 counter = 0
 
-
-"""Remaining->"""
 while mines_remaining != 0:
 	getInputOfBlocks()
 	mines_remaining = GLOBALS.TOTAL_MINES_REMAINING
 	while True:
 		flag = False
+		
 		for val in GLOBALS.BLOCK_NUMBERS:
-			print "Iterating for val = {0}".format(val)
 			position = positions[str(val)]
 			for coordinates in position:
 				blocks_coordinates, counts = setProbabilityFlag(coordinates[0], coordinates[1])
-				s = "{0}, {1} ->".format((coordinates[0], coordinates[1]),val)
-				print s,
-				print blocks_coordinates, counts
-				if counts['mines_count'] == val and counts['blank_count'] > 0:
-					print "marking safe the coordinates: {0}".format(blocks_coordinates)
-					status = solver.mark_all(board, blocks_coordinates, GLOBALS.BLOCK_CODES['safe'])
+
+				mark = None
+				if (counts['mines'] == val and counts['blank'] > 0):
+					mark = GLOBALS.BLOCK_CODES['safe']
+				elif (counts['blank'] <= val-counts['mines']):
+					mark = GLOBALS.BLOCK_CODES['mines']
+				
+				if mark != None:
+					status = solver.mark_all(board, blocks_coordinates, mark)
 					if status:
 						flag = True
-				elif counts['blank_count'] <= val-counts['mines_count']:
-					# All the mines
-					status = solver.mark_all(board, blocks_coordinates, GLOBALS.BLOCK_CODES['mines'])
-					if status:
-						flag = True
-			print board
-		if flag == False:
-			print "Breaking, more information needed for proceeding"
-			was_clicked = clickOnSafeFlags(8)
+
+		if not flag:
+			was_clicked = clickOnSafeFlags(GLOBALS.number_of_blocks)
 			if not was_clicked:
-				print "Not clicked"
 				counter += 1
 			if counter == 2:
 				counter = 0
-				print 'Board before calling the random is {0}'.format(board)
-				print 'Click random'
 				clickRandom()
 			break
+
 print 'Game ended, all flags found'
-time.sleep(0.2)
-if not is_game_finished():
-	# If the message box that says that the game is finished has not yet come, then mark all the mines
-	for i in xrange(0,8):
-		for j in xrange(0,8):
-			if board[i][j] == -100:
-				click(j,i,3)
+check_end()
