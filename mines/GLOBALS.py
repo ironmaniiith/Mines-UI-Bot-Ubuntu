@@ -76,8 +76,8 @@ BLOCK_CODES = {
 starting, ending, divisions = {}, {}, {}
 starting['x'] = 264
 starting['y'] = 89
-ending['x'] = 928
-ending['y'] = 753
+ending['x'] = 927
+ending['y'] = 752
 divisions['x'] = 8
 divisions['y'] = 8
 # starting['x']-starting['y'] == ending['x'] - ending['y'] for a square board
