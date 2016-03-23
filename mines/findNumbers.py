@@ -1,16 +1,11 @@
 #!/usr/bin/python
-
 from __future__ import division
+from modules import *
 import GLOBALS
-from operator import add, sub, div, le, lt
-import numpy as np
-import cv2
-import sys, os, re, collections
 import findImage
-AVAILABLE_NUMBERS = [1, 2, 3, 4, 5]
 
 def update_board(board):
-	for i in AVAILABLE_NUMBERS:
+	for i in GLOBALS.AVAILABLE_NUMBERS:
 		coordinates, image_number = findImage.main(i)
 		for j in coordinates:
 			board[j[0]][j[1]] = i # i or image_number, whatever :P
