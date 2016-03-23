@@ -1,29 +1,33 @@
 #!/usr/bin/python
-import os, time, random
+from modules import *
+import GLOBALS
 import giveDimensions
 import findNumbers, findOpened, findImage
+
 print "Instructions: "
 print "-1: Block not yet revealed."
 print "0: Block revealed and is null"
 print "1,2,3,4,5: Numbers that are opened"
 
-POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
-BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num >0]
+# POSSIBLE_NUMBERS = [-1, 0, 1, 2, 3, 4, 5]
+# BLOCK_NUMBERS = [num for num in POSSIBLE_NUMBERS if num >0]
 board = []
 positions = {}
-locations = giveDimensions.location_extractor()
-TOTAL_MINES_REMAINING = 10
-GLOBALS = {
-	'mines': -100,
-	'safe' : 100,
-	'blank' : -1,
-}
+mines_remaining = GLOBALS.TOTAL_MINES_REMAINING
+# locations = giveDimensions.location_extractor()
+# TOTAL_MINES_REMAINING = 10
+# GLOBALS = {
+	# 'mines': -100,
+	# 'safe' : 100,
+	# 'blank' : -1,
+# }
 
-def inrange(x,board_length):
-	return x>=0 and x<board_length
+def inrange(x,board_length=GLOBALS.number_of_blocks):
+	return x >= 0 and x < board_length
 
 """ ================================ TODO
 	Updating the positions dictionary is remaining, just do that
+	Rename this setProbabilityFlag function
 """
 
 def setProbabilityFlag(x, y):
@@ -82,20 +86,20 @@ def setProbabilityFlag(x, y):
 	blank_count = 0
 	mines_count = 0
 	safe_count = 0
+
 	for xdiff in xrange(-1,2):
 		for ydiff in xrange(-1,2,2-xdiff%2):
 			x_final = x + xdiff
 			y_final = y + ydiff
 
 			if inrange(x_final,8) and inrange(y_final, 8):
-				if board[x_final][y_final] == GLOBALS['mines']:
+				if board[x_final][y_final] == GLOBALS.BLOCK_CODES['mines']:
 					mines_count += 1
-				elif board[x_final][y_final] == GLOBALS['safe']:
+				elif board[x_final][y_final] == GLOBALS.BLOCK_CODES['safe']:
 					safe_count += 1
-				elif board[x_final][y_final] == GLOBALS['blank']:
+				elif board[x_final][y_final] == GLOBALS.BLOCK_CODES['blank']:
 					coordinates.append((x+xdiff, y+ydiff))
 					blank_count += 1
-				# print (x+xdiff,y+ydiff)
 
 	return coordinates, { 'blank_count': blank_count, 'safe_count': safe_count, 'mines_count': mines_count }
 	"""
@@ -110,16 +114,17 @@ class Solver():
 	def __init__(self):
 		pass
 	def mark_all(self, board, blocks_coordinates, flag):
-		global TOTAL_MINES_REMAINING
 		status = False
+		global mines_remaining
 		for coordinate in blocks_coordinates:
 			if board[coordinate[0]][coordinate[1]] != flag:
-				# print "Marking flag = {0} at {1}".format(flag, (coordinate[0], coordinate[1]))
 				board[coordinate[0]][coordinate[1]] = flag
-				TOTAL_MINES_REMAINING -= (flag == GLOBALS['mines'])
-				# print "TOTAL_MINES_REMAINING = " + str(TOTAL_MINES_REMAINING)
+				mines_remaining -= (flag == GLOBALS.BLOCK_CODES['mines'])
 				status = True
 		return status
+	"""
+		Remove the below functions if not necessary
+	"""
 	def mark_safe(self):
 		pass
 	def mark_mines(self):
@@ -128,75 +133,73 @@ class Solver():
 		pass
 
 def is_game_finished():
-	# print 'is_game_finished================================='
-	coordinates, x = findImage.main('finished')
+	coordinates, x = findImage.main('finished') # finished.png is the image when the game is finished
 	if len(coordinates):
 		exit(0)
 	return False
 
 def getInputOfBlocks():
-	print 'Taking new input'
 	global board
 	board = []
 	global positions
 	positions = {}
 
-	for i in POSSIBLE_NUMBERS:
+	for i in GLOBALS.POSSIBLE_NUMBERS:
 		positions[str(i)] = []
 
-	# os.system('xdotool mousemove 9 100') # Just remove the mouse before taking screenshot
+	# Avoid writing into the file 'id' and use subprocess later
 	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
 	os.system('xdotool windowactivate `cat id`')
 	time.sleep(0.1)
-	os.system('scrot -z -q 100 fullScreen.png')
+	os.system('scrot -z -q 100 fullScreen.png') # Search for alternative screenshot method which is preinstalled in most systems
 	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
-	for i in xrange(0,8):
-		board.append([-1]*8)
+	for i in xrange(0,GLOBALS.number_of_blocks):
+		board.append([-1]*GLOBALS.number_of_blocks)
 
 	if is_game_finished():
 		exit(0)
 	findNumbers.update_board(board)
 	findOpened.update_board(board)
-	for i in xrange(0,8):
-		for j in xrange(0,8):
+	for i in xrange(0,GLOBALS.number_of_blocks):
+		for j in xrange(0,GLOBALS.number_of_blocks):
 			positions[str(board[i][j])].append((i,j))
-	print board
+	# print board
 
 def click(i,j,click_type=1):
 	time.sleep(0.1)
-	os.system("xdotool mousemove {0} {1} click {2}".format(locations[i][j][0], locations[i][j][1], click_type))
-	print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
+	os.system("xdotool mousemove {0} {1} click {2}".format(GLOBALS.locations[i][j][0], GLOBALS.locations[i][j][1], click_type))
+	# print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
 
-def clickRandom(board_length=8):
-	# i,j = random.choice(positions['-1']) # Can use only this is the positions are also updated, which is not being done for now
-	# click(j,i)
+def clickRandom(board_length=GLOBALS.number_of_blocks):
 	shuf = []
-	for i in xrange(0,board_length):
-		for j in xrange(0,board_length):
-			if board[i][j] == -1:
+	for i in xrange(0, board_length):
+		for j in xrange(0, board_length):
+			if board[i][j] == GLOBALS.BLOCK_CODES['blank']:
 				shuf.append((i,j))
 	i,j = random.choice(shuf)
 	click(j,i)
-def clickOnSafeFlags(board_length):
-	print "Going to start clickOnSafeFlags"
+
+def clickOnSafeFlags(board_length=GLOBALS.number_of_blocks):
 	was_clicked = False
-	for i in xrange(0,board_length):
+	for i in xrange(0, board_length):
 		for j in xrange(0, board_length):
-			if board[i][j] == GLOBALS['safe']:
+			if board[i][j] == GLOBALS.BLOCK_CODES['safe']:
 				click(j,i)
 				was_clicked = True
 	return was_clicked
+
+solver = Solver()
 counter = 0
 
-while TOTAL_MINES_REMAINING != 0:
+
+"""Remaining->"""
+while mines_remaining != 0:
 	getInputOfBlocks()
-	TOTAL_MINES_REMAINING = 10
-	solver = Solver()
+	mines_remaining = GLOBALS.TOTAL_MINES_REMAINING
 	while True:
-		print "==========================================================="
 		flag = False
-		for val in BLOCK_NUMBERS:
+		for val in GLOBALS.BLOCK_NUMBERS:
 			print "Iterating for val = {0}".format(val)
 			position = positions[str(val)]
 			for coordinates in position:
@@ -206,12 +209,12 @@ while TOTAL_MINES_REMAINING != 0:
 				print blocks_coordinates, counts
 				if counts['mines_count'] == val and counts['blank_count'] > 0:
 					print "marking safe the coordinates: {0}".format(blocks_coordinates)
-					status = solver.mark_all(board, blocks_coordinates, GLOBALS['safe'])
+					status = solver.mark_all(board, blocks_coordinates, GLOBALS.BLOCK_CODES['safe'])
 					if status:
 						flag = True
 				elif counts['blank_count'] <= val-counts['mines_count']:
 					# All the mines
-					status = solver.mark_all(board, blocks_coordinates, GLOBALS['mines'])
+					status = solver.mark_all(board, blocks_coordinates, GLOBALS.BLOCK_CODES['mines'])
 					if status:
 						flag = True
 			print board
