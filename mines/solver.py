@@ -114,18 +114,16 @@ class Solver():
 	"""
 		Remove the below functions if not necessary
 	"""
-	def mark_safe(self):
-		pass
-	def mark_mines(self):
-		pass
-	def assign_probability(self):
-		pass
 
 def is_game_finished():
 	coordinates, x = findImage.main('finished') # finished.png is the image when the game is finished
 	if len(coordinates):
 		exit(0)
 	return False
+
+def get_cropped_image():
+	os.system('scrot -z -q 100 fullScreen.png')
+	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
 
 def getInputOfBlocks():
 	global board
@@ -140,8 +138,7 @@ def getInputOfBlocks():
 	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
 	os.system('xdotool windowactivate `cat id`')
 	time.sleep(0.1)
-	os.system('scrot -z -q 100 fullScreen.png') # Search for alternative screenshot method which is preinstalled in most systems
-	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
+	get_cropped_image()
 	for i in xrange(0,GLOBALS.number_of_blocks):
 		board.append([-1]*GLOBALS.number_of_blocks)
 
@@ -179,7 +176,8 @@ def clickOnSafeFlags(board_length=GLOBALS.number_of_blocks):
 	return was_clicked
 
 def check_end():
-	time.sleep(0.5)
+	time.sleep(0.3)
+	get_cropped_image()
 	if not is_game_finished():
 		# If the message box that says that the game is finished has not yet come, then mark all the mines
 		click_type = 3 # Right click to mark the mines
