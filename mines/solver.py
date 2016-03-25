@@ -4,11 +4,6 @@ import GLOBALS
 import giveDimensions
 import findNumbers, findOpened, findImage
 
-print "Instructions: "
-print "-1: Block not yet revealed."
-print "0: Block revealed and is null"
-print "1,2,3,4,5: Numbers that are opened"
-
 board = []
 positions = {}
 mines_remaining = GLOBALS.TOTAL_MINES_REMAINING
