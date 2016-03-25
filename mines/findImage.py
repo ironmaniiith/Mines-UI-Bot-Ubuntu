@@ -7,14 +7,14 @@ TODO:
 	Add comments
 """
 
-def main(image_name,image=GLOBALS.cropped_image):
+def main(image_name, image=GLOBALS.cropped_image, block_size=None, shift=None):
 	template_image = str(image_name) + '.png'
 	image = cv2.imread(image)
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # Convert to gray
 
 	total_rows = len(image)
-	block_size = (total_rows)/GLOBALS.number_of_blocks
-	shift = block_size/2
+	block_size = block_size or (total_rows)/GLOBALS.number_of_blocks
+	shift = shift or block_size/2
 
 	template = cv2.imread(template_image, 0)
 	w, h = template.shape[::-1]

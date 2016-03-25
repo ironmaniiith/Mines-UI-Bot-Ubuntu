@@ -106,9 +106,21 @@ class Solver():
 				mines_remaining -= (flag == GLOBALS.BLOCK_CODES['mines'])
 				status = True
 		return status
+
+def start_game():
 	"""
-		Remove the below functions if not necessary
+		Click on the Play again button if present on the screen, for more details, refer playAgain.png and gameOver.png
 	"""
+
+	# Avoid writing into the file 'id' and use subprocess later
+	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
+	os.system('xdotool windowactivate `cat id`')
+	time.sleep(0.1)
+	get_cropped_image()
+	coordinates, image_name = findImage.main('playAgain', 'fullScreen.png', 1, 20)
+	if len(coordinates):
+		i,j = coordinates[0][0], coordinates[0][1]
+		clickAbsolute(j,i)
 
 def is_game_finished():
 	coordinates, x = findImage.main('finished') # finished.png is the image when the game is finished
@@ -121,7 +133,7 @@ def get_cropped_image(dimensions={'x':670, 'y':670},
 						image={'main' : 'fullScreen.png', 'cropped': 'cropped.png'}
 					):
 	os.system('scrot -z -q 100 {0}'.format(image['main']))
-	os.system('convert -crop {0}x{1}+{2}+{3} fullScreen.png cropped.png'
+	os.system('convert -crop {0}x{1}+{2}+{3} {4} {5}'
 			.format(dimensions['x'], dimensions['y'],
 					offset['x'], offset['y'],
 					image['main'], image['cropped']
@@ -137,9 +149,6 @@ def getInputOfBlocks():
 	for i in GLOBALS.POSSIBLE_NUMBERS:
 		positions[str(i)] = []
 
-	# Avoid writing into the file 'id' and use subprocess later
-	os.system('xwininfo -root -tree  | grep -i -e "gnome-mine" -e "Print Cart"| egrep -o "[0-9a-fA-F]+x[0-9a-fA-F]+" | head -1 > id')
-	os.system('xdotool windowactivate `cat id`')
 	time.sleep(0.1)
 	get_cropped_image()
 	for i in xrange(0,GLOBALS.number_of_blocks):
@@ -159,6 +168,10 @@ def click(i,j,click_type=1):
 	os.system("xdotool mousemove {0} {1} click {2}".format(GLOBALS.locations[i][j][0], GLOBALS.locations[i][j][1], click_type))
 	# print "clicking {0} {1}".format(locations[i][j][0], locations[i][j][1])
 	return
+
+def clickAbsolute(i,j,click_type=1):
+	time.sleep(0.1)
+	os.system('xdotool mousemove {0} {1} click {2}'.format(i,j,click_type))
 
 def clickRandom(board_length=GLOBALS.number_of_blocks):
 	shuf = []
@@ -191,6 +204,7 @@ def check_end():
 
 solver = Solver()
 counter = 0
+start_game()
 
 while mines_remaining != 0:
 	getInputOfBlocks()
