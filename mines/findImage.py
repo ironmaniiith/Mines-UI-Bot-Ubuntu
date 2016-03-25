@@ -7,9 +7,9 @@ TODO:
 	Add comments
 """
 
-def main(image_name):
+def main(image_name,image=GLOBALS.cropped_image):
 	template_image = str(image_name) + '.png'
-	image = cv2.imread(GLOBALS.cropped_image)
+	image = cv2.imread(image)
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # Convert to gray
 
 	total_rows = len(image)
