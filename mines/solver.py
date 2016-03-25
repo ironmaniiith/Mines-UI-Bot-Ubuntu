@@ -116,9 +116,17 @@ def is_game_finished():
 		exit(0)
 	return False
 
-def get_cropped_image():
-	os.system('scrot -z -q 100 fullScreen.png')
-	os.system('convert -crop 670x670+260+85 fullScreen.png cropped.png')
+def get_cropped_image(dimensions={'x':670, 'y':670},
+						offset={'x':260, 'y':85},
+						image={'main' : 'fullScreen.png', 'cropped': 'cropped.png'}
+					):
+	os.system('scrot -z -q 100 {0}'.format(image['main']))
+	os.system('convert -crop {0}x{1}+{2}+{3} fullScreen.png cropped.png'
+			.format(dimensions['x'], dimensions['y'],
+					offset['x'], offset['y'],
+					image['main'], image['cropped']
+				)
+			)
 
 def getInputOfBlocks():
 	global board
