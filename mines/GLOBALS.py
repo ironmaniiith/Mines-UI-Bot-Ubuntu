@@ -10,7 +10,7 @@ number_of_blocks = 8
 """
 	threshold : Threshold while matching images
 """
-threshold = 0.95
+threshold = 0.92
 
 """
 	cropped_image : The image containing the cropped image of the board
